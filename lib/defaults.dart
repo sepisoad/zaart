@@ -1,7 +1,7 @@
-export 'defaults/default-index.dart';
-export 'defaults/default-html.dart';
-export 'defaults/default-css.dart';
-export 'defaults/default-js.dart';
+export 'defaults/default_index.dart';
+export 'defaults/default_html.dart';
+export 'defaults/default_css.dart';
+export 'defaults/default_js.dart';
 
 const LOG_FILE_NAME = "zaart.log";
 const DEFAULT_NAME = "zaart-site";
