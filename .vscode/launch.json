@@ -1,0 +1,73 @@
+{
+  // Use IntelliSense to learn about possible attributes.
+  // Hover to view descriptions of existing attributes.
+  // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+  "version": "0.2.0",
+  "configurations": [
+
+    {
+      "name": "Debug [help]",
+      "program": "bin/main.dart",
+      "request": "launch",
+      "type": "dart",
+      "args": [
+        "--help"
+      ]
+    }, {
+      "name": "Debug [init]",
+      "program": "bin/main.dart",
+      "request": "launch",
+      "type": "dart",
+      "args": [
+        "init",
+        "--name",
+        "_shit_"
+      ]
+    }, {
+      "name": "Debug [section - add]",
+      "program": "bin/main.dart",
+      "request": "launch",
+      "type": "dart",
+      "args": [
+        "section",
+        "add",
+        "--name",
+        "DEBUG"
+      ]
+    }, {
+      "name": "Debug [page - add]",
+      "program": "bin/main.dart",
+      "request": "launch",
+      "type": "dart",
+      "args": [
+        "page",
+        "add",
+        "--name",
+        "xxx",
+        "--section",
+        "DEBUG"
+      ]
+    }, {
+      "name": "Debug [page - del]",
+      "program": "bin/main.dart",
+      "request": "launch",
+      "type": "dart",
+      "args": [
+        "page",
+        "del",
+        "--name",
+        "xxx",
+        "--section",
+        "DEBUG"
+      ]
+    }, {
+      "name": "Debug [build]",
+      "program": "bin/main.dart",
+      "request": "launch",
+      "type": "dart",
+      "args": [
+        "build"
+      ]
+    }
+  ]
+}
