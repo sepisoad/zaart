@@ -2,10 +2,10 @@ import 'dart:io';
 import 'package:args/args.dart';
 import 'package:logging/logging.dart';
 import 'default.dart';
-import 'cmd-init.dart';
-import 'cmd-section.dart';
-import 'cmd-page.dart';
-import 'cmd-build.dart';
+import 'cmd_init.dart';
+import 'cmd_section.dart';
+import 'cmd_page.dart';
+import 'cmd_build.dart';
 
 // =============================================================================
 // zaart

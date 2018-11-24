@@ -1,5 +1,5 @@
 import 'package:test/test.dart';
-import 'package:zaart/cmd-init.dart';
+import 'package:zaart/cmd_init.dart';
 import 'package:zaart/default.dart';
 import 'utils.dart';
 

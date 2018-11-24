@@ -1,34 +1,34 @@
 import 'package:test/test.dart';
-import 'package:zaart/cmd-init.dart';
-import 'package:zaart/cmd-section.dart';
-import 'package:zaart/cmd-page.dart';
-import 'package:zaart/cmd-unpublish.dart';
+import 'package:zaart/cmd_init.dart';
+import 'package:zaart/cmd_section.dart';
+import 'package:zaart/cmd_page.dart';
+import 'package:zaart/cmd_publish.dart';
 import 'package:zaart/default.dart';
 import 'package:zaart/utils.dart';
 import 'utils.dart';
 
 // =============================================================================
-// cmd unpublish tests
+// cmd publish tests
 main() {
-  group("cmd-unpublish-tests", () {
-    test("test cmdUnpublish() with null", () {
-      var res = cmdUnpublish(null);
+  group("cmd-publish-tests", () {
+    test("test cmdPublish() with null", () {
+      var res = cmdPublish(null);
       expect(res, false);
     });
 
-    test("test cmdUnpublish() with empty map", () {
-      var res = cmdUnpublish(Map());
+    test("test cmdPublish() with empty map", () {
+      var res = cmdPublish(Map());
       expect(res, false);
     });
 
-    test("test cmdUnpublish() with missing config key", () {
+    test("test cmdPublish() with missing config key", () {
       var ctx = Map<String, dynamic>();
       ctx['a'] = 'a';
-      var res = cmdUnpublish(ctx);
+      var res = cmdPublish(ctx);
       expect(res, false);
     });
 
-    test("test cmdUnpublish() as normal", () {
+    test("test cmdPublish() as normal", () {
       var context = Map();
       context["name"] = "test-gen-site";
       context["config"] = ZAART_CONFIG;
@@ -39,9 +39,9 @@ main() {
       context["cmd-page"]["fun"] = "add";
       context["cmd-page"]["section"] = "_test_";
       context["cmd-page"]["name"] = "a";
-      context["cmd-unpublish"] = Map();
-      context["cmd-unpublish"]["page"] = "a";
-      context["cmd-unpublish"]["section"] = "_test_";
+      context["cmd-publish"] = Map();
+      context["cmd-publish"]["page"] = "a";
+      context["cmd-publish"]["section"] = "_test_";
 
       deleteSite();
       cmdInit(context);
@@ -55,10 +55,10 @@ main() {
       expect(cfg.sections[0].children.length, 1);
       expect(cfg.sections[0].children[0].name, context["cmd-page"]["name"]);
 
-      res = cmdUnpublish(context);
+      res = cmdPublish(context);
       expect(res, true);
       cfg = readConfig(context["config"]);
-      expect(cfg.sections[0].children[0].published, false);
+      expect(cfg.sections[0].children[0].published, true);
 
       context["cmd-section"]["fun"] = "del";
       res = cmdSection(context);

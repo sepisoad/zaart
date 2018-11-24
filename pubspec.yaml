@@ -1,8 +1,14 @@
 name: zaart
-author: Sepehr Aryani
+author: Sepehr Aryani <sepehr.aryani@gmail.com>
 homepage: https://github.com/sepisoad/zaart
 version: 0.0.1
 description: a dead simple static site generator (for dart)
+
+executables:
+  zaart: main
+
+environment:
+  sdk: '>=2.0.0 <3.0.0'
 
 dependencies:
   logging: ^0.11.3+2

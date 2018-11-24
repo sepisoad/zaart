@@ -1,6 +1,6 @@
 import 'package:test/test.dart';
-import 'package:zaart/cmd-init.dart';
-import 'package:zaart/cmd-section.dart';
+import 'package:zaart/cmd_init.dart';
+import 'package:zaart/cmd_section.dart';
 import 'package:zaart/default.dart';
 import 'package:zaart/utils.dart';
 import 'utils.dart';

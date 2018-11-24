@@ -1,9 +1,9 @@
 import 'package:test/test.dart';
-import 'package:zaart/cmd-init.dart';
-import 'package:zaart/cmd-section.dart';
-import 'package:zaart/cmd-page.dart';
-import 'package:zaart/cmd-publish.dart';
-import 'package:zaart/cmd-build.dart';
+import 'package:zaart/cmd_init.dart';
+import 'package:zaart/cmd_section.dart';
+import 'package:zaart/cmd_page.dart';
+import 'package:zaart/cmd_publish.dart';
+import 'package:zaart/cmd_build.dart';
 import 'package:zaart/default.dart';
 import 'utils.dart';
 
