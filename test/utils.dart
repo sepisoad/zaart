@@ -1,5 +1,5 @@
 import 'dart:io';
-import 'package:zaart/default.dart';
+import 'package:zaart/defaults.dart';
 import 'package:zaart/config.dart';
 
 //

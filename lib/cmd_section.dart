@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:logging/logging.dart';
 import 'config.dart';
-import 'default.dart';
+import 'defaults.dart';
 import 'utils.dart';
 
 // =============================================================================

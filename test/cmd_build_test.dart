@@ -4,7 +4,7 @@ import 'package:zaart/cmd_section.dart';
 import 'package:zaart/cmd_page.dart';
 import 'package:zaart/cmd_publish.dart';
 import 'package:zaart/cmd_build.dart';
-import 'package:zaart/default.dart';
+import 'package:zaart/defaults.dart';
 import 'utils.dart';
 
 // =============================================================================

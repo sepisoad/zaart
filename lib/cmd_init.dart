@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'dart:convert';
-import 'default.dart';
+import 'defaults.dart';
 import 'utils.dart';
 import 'package:logging/logging.dart';
 

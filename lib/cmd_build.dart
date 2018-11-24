@@ -2,7 +2,7 @@ import 'dart:io';
 import 'package:logging/logging.dart';
 import 'package:markdown/markdown.dart';
 import 'package:mustache/mustache.dart';
-import 'default.dart';
+import 'defaults.dart';
 import 'utils.dart';
 
 // TODO:

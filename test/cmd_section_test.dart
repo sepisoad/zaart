@@ -1,7 +1,7 @@
 import 'package:test/test.dart';
 import 'package:zaart/cmd_init.dart';
 import 'package:zaart/cmd_section.dart';
-import 'package:zaart/default.dart';
+import 'package:zaart/defaults.dart';
 import 'package:zaart/utils.dart';
 import 'utils.dart';
 

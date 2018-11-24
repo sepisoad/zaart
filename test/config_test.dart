@@ -1,6 +1,6 @@
 import 'package:test/test.dart';
 import 'package:zaart/utils.dart';
-import 'package:zaart/default.dart';
+import 'package:zaart/defaults.dart';
 import 'utils.dart';
 
 // =============================================================================
