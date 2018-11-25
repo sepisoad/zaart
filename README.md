@@ -14,14 +14,14 @@ zaart is in early development stage, use it on your own risk, you probably face 
 
 type in the command bellow in console to start a new site
 ```sh
-zaart init --name [MY_SITE_NAME]
+#> zaart init --name [MY_SITE_NAME]
 ```
 
 for more information type in:
 ```sh
-zaart -h
+#> zaart -h
 ```
 or
 ```sh
-zaart --help
+#> zaart --help
 ```
