@@ -63,7 +63,7 @@ bool cmdSection(Map ctx) {
 // _funAdd
 bool _funAdd(Config cfg, String cfgName, String name) {
   bool exists = cfg.sections.any((section) {
-    return section == name;
+    return section.name == name;
   });
 
   if (exists) {

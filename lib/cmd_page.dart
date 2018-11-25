@@ -93,7 +93,7 @@ bool _funAdd(Config cfg, String cfgName, String page, String section) {
 
   var s = cfg.sections[sectionIdx];
   exists = s.children.any((child) {
-    return child == page;
+    return child.name == page;
   });
 
   if (exists) {
