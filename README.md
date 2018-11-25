@@ -3,7 +3,7 @@
 zaart is a dead simple static site generator written in [dart programming language](https://dartlang.org)
 
 # ☢️ CAUTIONS!
-zaart is in early development stage, use it on your own risk, you probably face bugs here an there.
+zaart is in early development stage, use it at your own risk, you probably face some nasty bugs here an there.
 
 # ✔️ How to install:
 ```sh
