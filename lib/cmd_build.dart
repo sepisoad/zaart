@@ -39,7 +39,10 @@ bool cmdBuild(Map ctx) {
   }
 
   var cfg = readConfig(ctx["config"]);
+
   var srcPages = <String>[];
+  srcPages.add(INDEX_NAME);
+  cfg.sections.forEach((s) => srcPages.add(s.name + "/index"));
   cfg.sections.forEach((s) => s.children.forEach((c) {
         if (c.published) {
           srcPages.add(s.name + '/' + c.name.replaceAll(".md", ""));
@@ -47,39 +50,18 @@ bool cmdBuild(Map ctx) {
       }));
 
   var dstPages = <String>[];
-  // TODO: enhance this fucking hack
-  Directory(BUILD_DIR)
-      .listSync(followLinks: false, recursive: false)
-      .forEach((ent) {
-    if (ent is Directory) {
-      var dirName = ent.uri.toString().replaceAll("build/", "");
-      if (dirName == LAYOUT_DIR + "/") return;
-      Directory(ent.uri.toString())
-          .listSync(followLinks: false, recursive: false)
-          .forEach((s) {
-        if (s is File) {
-          var fileName = s.uri.toString();
-          if (fileName.contains(".html")) {
-            var pageName =
-                fileName.replaceAll("build/", "").replaceAll(".html", "");
-            dstPages.add(pageName);
-          }
-        }
-      });
-    }
 
-    if (ent is File) {
-      var fileName = ent.uri.toString();
-      if (fileName.contains(".html")) {
-        var pageName =
-            fileName.replaceAll("build/", "").replaceAll(".html", "");
-        dstPages.add(pageName);
-      }
-    }
+  Directory(BUILD_DIR).listSync(recursive: true).forEach((e) {
+    if (e is Directory) return;
+    if (e.uri.toString().startsWith(BUILD_DIR + "/" + LAYOUT_DIR)) return;
+    dstPages.add(e.uri
+        .toString()
+        .replaceFirst(BUILD_DIR + "/", "")
+        .replaceFirst(".html", ""));
   });
 
   var isSync = dstPages.every((dst) => srcPages.any((src) => src == dst));
-  if (isSync) {
+  if (!isSync) {
     print("oops, seems that you have some out of sync pages");
     print(
       "that means that you have sections or pages in your build directory"
@@ -95,8 +77,6 @@ bool cmdBuild(Map ctx) {
     srcPages.removeWhere((src) => dstPages.any((dst) => src == dst));
     srcPages.forEach((page) => buildList.add(page));
   }
-
-  buildList.add("index");
 
   buildList.forEach((page) {
     var srcFile = File(page + ".md");

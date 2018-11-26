@@ -6,6 +6,7 @@ export 'defaults/default_js.dart';
 const LOG_FILE_NAME = "zaart.log";
 const DEFAULT_NAME = "zaart-site";
 const ZAART_CONFIG = "zaart.json";
+const INDEX_NAME = "index";
 const INDEX_PAGE = "index.md";
 const ROOT_INDEX_PAGE = "index.md";
 const BUILD_DIR = "build";
