@@ -30,10 +30,7 @@ zaart(List<String> args) async {
   _defUnpublishCmd(argParser, context);
   _defBuildCmd(argParser, context);
 
-  argParser.addFlag("help", abbr: "h", callback: (val) async {
-    _printHelp();
-    exit(0);
-  });
+  argParser.addFlag("help", abbr: "h", defaultsTo: false, callback: _printHelp);
 
   ArgResults res;
 
@@ -43,6 +40,7 @@ zaart(List<String> args) async {
     Logger.root.severe(err);
     print("i do not understand what you mean!");
     print("use help command for more HELP!");
+    print(err);
     return;
   }
 
@@ -68,10 +66,7 @@ zaart(List<String> args) async {
       cmdBuild(context);
       break;
     default:
-      var msg = "'${res.command.name}' is not a valid command";
-      Logger.root.warning(msg);
-      Logger.root.warning(msg);
-      print(msg);
+      print("oops, '${res.command.name}' is not a valid command");
       break;
   }
 }
@@ -99,7 +94,8 @@ _setupLogger() {
   }
 }
 
-_printHelp() {
+void _printHelp(bool val) async {
+  if (!val) return;
   print("usage: zaart [command] (options: value) (flags)\n"
       "commands:\n"
       "✔ init => is used to initialize a new site\n"
@@ -152,6 +148,8 @@ _printHelp() {
       "    ‣ zaart build\n"
       "    ‣ zaart build -f\n"
       "\n");
+
+  exit(0);
 }
 
 // =============================================================================
