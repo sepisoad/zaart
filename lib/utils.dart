@@ -5,6 +5,8 @@ import 'config.dart';
 
 // =============================================================================
 // isInitialized
+/// is used to check if any initialized site is found on the path
+/// [ctx] is zaart context map
 bool isInitialized(Map ctx) {
   if (ctx == null) {
     print("oops, i faced an internal error!");
@@ -32,6 +34,7 @@ bool isInitialized(Map ctx) {
 
 // =============================================================================
 // readConfig
+/// reads site condig from [path] and returns a `Config` object
 Config readConfig(String path) {
   File file;
   String jsCfgStr;
@@ -58,6 +61,8 @@ Config readConfig(String path) {
 
 // =============================================================================
 // writeConfig
+/// converts a `Config` objects to its json representation and writes it
+/// into file
 bool writeConfig(Map<String, dynamic> cfg, String path) {
   File file;
   try {
@@ -75,6 +80,7 @@ bool writeConfig(Map<String, dynamic> cfg, String path) {
 
 // =============================================================================
 // getDirList
+/// returns a list of `String`s, each represent a section name.
 List<String> getDirList() {
   var list = List<String>();
   var dir = Directory(".");
@@ -99,6 +105,7 @@ List<String> getDirList() {
 
 // =============================================================================
 // renameMd2Html
+/// helper function that renames a string ending with '.md' to '.html'
 String renameMd2Html(String name) {
   var res = name.replaceFirst(RegExp(r'.md$'), '.html');
   return res;

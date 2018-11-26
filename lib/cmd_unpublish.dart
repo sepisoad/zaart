@@ -4,16 +4,18 @@ import 'utils.dart';
 
 // =============================================================================
 // cmdUnpublish
+/// performs unpublish command
+/// [ctx] is zaart context map
 bool cmdUnpublish(Map ctx) {
-  bool _isInitialized;
+  bool _isInitializedFlag;
   try {
-    _isInitialized = isInitialized(ctx);
+    _isInitializedFlag = isInitialized(ctx);
   } catch (err) {
     Logger.root.severe(err.toString());
     return false;
   }
 
-  if (!_isInitialized) {
+  if (!_isInitializedFlag) {
     return false;
   }
 

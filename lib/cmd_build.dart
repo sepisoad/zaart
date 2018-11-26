@@ -5,22 +5,20 @@ import 'package:mustache/mustache.dart';
 import 'defaults.dart';
 import 'utils.dart';
 
-// TODO:
-// i am not happy with build command logic
-// this module needs to be refactored
-
 // =============================================================================
 // cmdBuild
+/// performs build command
+/// [ctx] is zaart context map
 bool cmdBuild(Map ctx) {
-  bool _isInitialized;
+  bool _isInitializedFlag;
   try {
-    _isInitialized = isInitialized(ctx);
+    _isInitializedFlag = isInitialized(ctx);
   } catch (err) {
     Logger.root.severe(err.toString());
     return false;
   }
 
-  if (!_isInitialized) {
+  if (!_isInitializedFlag) {
     return false;
   }
 

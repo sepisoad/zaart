@@ -1,6 +1,6 @@
 // =============================================================================
 // Children type
-
+/// A class that represents section children
 class Children {
   String name;
   bool published;
@@ -8,6 +8,7 @@ class Children {
   String author;
   List<String> tags;
 
+  /// default constructor
   Children()
       : name = '',
         published = false,
@@ -15,6 +16,8 @@ class Children {
         author = 'UNKNOWN',
         tags = <String>[];
 
+  /// json constructor
+  /// [json] is a `Map` with a `String` key and `dynamic` value
   Children.fromJson(Map<String, dynamic> json) {
     this.name = json['name'];
     this.published = json['published'];
@@ -23,6 +26,7 @@ class Children {
     this.tags = json['tags'].map<String>((s) => s as String).toList();
   }
 
+  /// converts object to `json`
   Map<String, dynamic> toJson() => {
         'name': this.name,
         'published': this.published,
@@ -34,15 +38,18 @@ class Children {
 
 // =============================================================================
 // Section type
-
+/// A class that represents sections
 class Section {
   String name;
   List<Children> children;
 
+  /// default constructor
   Section()
       : name = '',
         children = <Children>[];
 
+  /// json constructor
+  /// [json] is a `Map` with a `String` key and `dynamic` value
   Section.fromJson(Map<String, dynamic> json) {
     this.name = json['name'];
     this.children = json['children'].map<Children>((c) {
@@ -50,6 +57,7 @@ class Section {
     }).toList();
   }
 
+  /// converts object to `json`
   Map<String, dynamic> toJson() => {
         'name': this.name,
         'children': this.children.map((c) => c.toJson()).toList()
@@ -58,17 +66,20 @@ class Section {
 
 // =============================================================================
 // Config type
-
+/// A class that represents configuration
 class Config {
   String author;
   String name;
   List<Section> sections;
 
+  /// default constructor
   Config()
       : author = "",
         name = "",
         sections = null;
 
+  /// json constructor
+  /// [json] is a `Map` with a `String` key and `dynamic` value
   Config.fromJson(Map<String, dynamic> json) {
     this.author = json['author'];
     this.name = json['name'];
@@ -79,6 +90,7 @@ class Config {
     }).toList();
   }
 
+  /// converts object to `json`
   Map<String, dynamic> toJson() => {
         'author': this.author,
         'name': this.name,

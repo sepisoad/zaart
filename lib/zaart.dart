@@ -9,6 +9,9 @@ import 'cmd_build.dart';
 
 // =============================================================================
 // zaart
+/// entry point for zaart command line application.
+/// this function parses [args]. args are passed into this tool from
+/// command prompt
 zaart(List<String> args) async {
   _setupLogger();
 
