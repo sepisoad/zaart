@@ -2,7 +2,11 @@ name: zaart
 author: Sepehr Aryani <sepehr.aryani@gmail.com>
 homepage: https://github.com/sepisoad/zaart
 version: 0.0.11
-description: a dead simple static site generator (for dart)
+description: 
+  a dead simple static site generator (for dart).
+  it uses markdown files as input and generates html files for you.
+  it also supports mustache templating language.
+  
 
 executables:
   zaart: main
