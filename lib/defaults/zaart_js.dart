@@ -1,4 +1,4 @@
-const DEFAULT_JS = """
+const ZAART_JS_CONTENT = """
 // zaart js
 // @sepisoad
 

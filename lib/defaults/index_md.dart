@@ -1,4 +1,4 @@
-const DEFAULT_INDEX = """
+const INDEX_MD_CONTENT = """
 
 # hello, This is a default ZAART! site
 

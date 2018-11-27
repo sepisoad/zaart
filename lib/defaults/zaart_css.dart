@@ -1,4 +1,4 @@
-const DEFAULT_CSS = """
+const ZAART_CSS_CONTENT = """
 /* zaart css */
 /* @sepisoad */
 
