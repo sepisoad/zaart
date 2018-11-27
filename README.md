@@ -59,3 +59,6 @@ or
 #> zaart --help
 
 ```
+
+
+see `TODO.md` file for a list of missing features

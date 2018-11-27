@@ -7,12 +7,14 @@ import 'cmd_section.dart';
 import 'cmd_page.dart';
 import 'cmd_build.dart';
 
+const _version = "0.0.12";
+
 // =============================================================================
 // zaart
 /// entry point for zaart command line application.
 /// this function parses [args]. args are passed into this tool from
 /// command prompt
-zaart(List<String> args) async {
+void zaart(List<String> args) async {
   _setupLogger();
 
   var context = Map();
@@ -34,6 +36,8 @@ zaart(List<String> args) async {
   _defBuildCmd(argParser, context);
 
   argParser.addFlag("help", abbr: "h", defaultsTo: false, callback: _printHelp);
+  argParser.addFlag("version",
+      abbr: "v", defaultsTo: false, callback: _printVersion);
 
   ArgResults res;
 
@@ -76,7 +80,7 @@ zaart(List<String> args) async {
 
 // =============================================================================
 // _setupLogger
-_setupLogger() {
+void _setupLogger() {
   var logFile = File(LOG_FILE_NAME);
   try {
     logFile.createSync(recursive: false);
@@ -97,6 +101,8 @@ _setupLogger() {
   }
 }
 
+// =============================================================================
+// _printVersion
 void _printHelp(bool val) async {
   if (!val) return;
   print("usage: zaart [command] (options: value) (flags)\n"
@@ -156,8 +162,16 @@ void _printHelp(bool val) async {
 }
 
 // =============================================================================
+// _printVersion
+_printVersion(bool val) {
+  if (!val) return;
+  print("zaart! version: $_version");
+  exit(0);
+}
+
+// =============================================================================
 // _defInitCmd
-_defInitCmd(ArgParser root, Map ctx) {
+void _defInitCmd(ArgParser root, Map ctx) {
   var cmd = root.addCommand("init");
   cmd.addOption("name",
       abbr: "n",
@@ -171,7 +185,7 @@ _defInitCmd(ArgParser root, Map ctx) {
 
 // =============================================================================
 // _defSectionCmd
-_defSectionCmd(ArgParser root, Map ctx) {
+void _defSectionCmd(ArgParser root, Map ctx) {
   var cmd = root.addCommand("section");
   var add = cmd.addCommand("add");
   var del = cmd.addCommand("del");
@@ -189,7 +203,7 @@ _defSectionCmd(ArgParser root, Map ctx) {
 
 // =============================================================================
 // _defPageCmd
-_defPageCmd(ArgParser root, Map ctx) {
+void _defPageCmd(ArgParser root, Map ctx) {
   var cmd = root.addCommand("page");
   var add = cmd.addCommand("add");
   var del = cmd.addCommand("del");
@@ -217,7 +231,7 @@ _defPageCmd(ArgParser root, Map ctx) {
 
 // =============================================================================
 // _defPublishCmd
-_defPublishCmd(ArgParser root, Map ctx) {
+void _defPublishCmd(ArgParser root, Map ctx) {
   var cmd = root.addCommand("publish");
 
   cmd.addOption("page", abbr: "p", defaultsTo: null, callback: (val) async {
@@ -231,7 +245,7 @@ _defPublishCmd(ArgParser root, Map ctx) {
 
 // =============================================================================
 // _defUnpublishCmd
-_defUnpublishCmd(ArgParser root, Map ctx) {
+void _defUnpublishCmd(ArgParser root, Map ctx) {
   var cmd = root.addCommand("unpublish");
 
   cmd.addOption("page", abbr: "p", defaultsTo: null, callback: (val) async {
@@ -245,7 +259,7 @@ _defUnpublishCmd(ArgParser root, Map ctx) {
 
 // =============================================================================
 // _defBuildCmd
-_defBuildCmd(ArgParser root, Map ctx) {
+void _defBuildCmd(ArgParser root, Map ctx) {
   var cmd = ArgParser();
   root.addCommand("build", cmd);
   cmd.addFlag("force", abbr: "f", defaultsTo: false, help: "builds site",
