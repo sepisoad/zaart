@@ -5,6 +5,8 @@ import 'defaults.dart';
 import 'cmd_init.dart';
 import 'cmd_section.dart';
 import 'cmd_page.dart';
+import 'cmd_publish.dart';
+import 'cmd_unpublish.dart';
 import 'cmd_build.dart';
 
 const _version = "0.0.12";
@@ -68,6 +70,12 @@ void zaart(List<String> args) async {
       break;
     case "page":
       cmdPage(context);
+      break;
+    case "publish":
+      cmdPublish(context);
+      break;
+    case "unpublish":
+      cmdUnpublish(context);
       break;
     case "build":
       cmdBuild(context);

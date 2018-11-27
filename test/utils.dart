@@ -70,7 +70,7 @@ Config getSampleConfigObject1() {
 // deleteSite
 
 deleteSite() {
-  var indexFile = File(INDEX_PAGE);
+  var indexFile = File(INDEX_MD);
   var configFile = File(ZAART_CONFIG);
   var buildDir = Directory(BUILD_DIR);
   var layoutDir = Directory(LAYOUT_DIR);

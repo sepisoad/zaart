@@ -1,7 +1,7 @@
-export 'defaults/default_index.dart';
-export 'defaults/default_html.dart';
-export 'defaults/default_css.dart';
-export 'defaults/default_js.dart';
+export 'defaults/index_html.dart';
+export 'defaults/index_md.dart';
+export 'defaults/zaart_css.dart';
+export 'defaults/zaart_js.dart';
 
 /// log file name
 const LOG_FILE_NAME = "zaart.log";
@@ -16,10 +16,7 @@ const ZAART_CONFIG = "zaart.json";
 const INDEX_NAME = "index";
 
 /// index markdown file name
-const INDEX_PAGE = "index.md";
-
-/// root index markdown file name
-const ROOT_INDEX_PAGE = "index.md";
+const INDEX_MD = "index.md";
 
 /// build directory
 const BUILD_DIR = "build";
@@ -27,8 +24,18 @@ const BUILD_DIR = "build";
 /// layout directory
 const LAYOUT_DIR = "layout";
 
-/// layput css file name
-const LAYOUT_CSS = "main.css";
+/// zaart css file name
+const ZAART_CSS = "zaart.css";
 
-/// layput js file name
-const LAYOUT_JS = "main.js";
+/// zaart js file name
+const ZAART_JS = "zaart.js";
+
+/// zaart layout includes
+const ZAART_LAYOUT_INCLUDES = <String>[
+  "https://cdn.jsdelivr.net/npm/tailwindcss/dist/tailwind.min.css",
+  "https://unpkg.com/leaflet@1.3.4/dist/leaflet.css",
+  "https://unpkg.com/leaflet@1.3.4/dist/leaflet.js"
+  // ,
+  // ZAART_CSS,
+  // ZAART_JS
+];

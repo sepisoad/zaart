@@ -1,8 +1,9 @@
 import 'dart:io';
 import 'dart:convert';
-import 'defaults.dart';
-import 'utils.dart';
 import 'package:logging/logging.dart';
+import 'defaults.dart';
+import 'config.dart';
+import 'utils.dart';
 
 // =============================================================================
 // cmdInit
@@ -29,14 +30,14 @@ bool cmdInit(Map ctx) {
     configFile.createSync(recursive: false);
   } catch (err) {}
 
-  if (FileSystemEntity.isFileSync(ROOT_INDEX_PAGE)) {
-    var msg = 'found an existing "$ROOT_INDEX_PAGE" file';
+  if (FileSystemEntity.isFileSync(INDEX_MD)) {
+    var msg = 'found an existing "$INDEX_MD" file';
     Logger.root.warning(msg);
     print(msg);
   } else {
-    var indexFile = File(ROOT_INDEX_PAGE);
+    var indexFile = File(INDEX_MD);
     indexFile.createSync(recursive: false);
-    indexFile.writeAsStringSync(DEFAULT_INDEX);
+    indexFile.writeAsStringSync(INDEX_MD_CONTENT);
   }
 
   if (FileSystemEntity.isFileSync(LAYOUT_DIR)) {
@@ -47,21 +48,21 @@ bool cmdInit(Map ctx) {
     var layoutDir = Directory(LAYOUT_DIR);
     layoutDir.createSync(recursive: false);
 
-    var layoutCss = File(LAYOUT_DIR + "/" + LAYOUT_CSS);
+    var layoutCss = File(LAYOUT_DIR + "/" + ZAART_CSS);
     layoutCss.createSync(recursive: false);
-    layoutCss.writeAsStringSync(DEFAULT_CSS);
+    layoutCss.writeAsStringSync(ZAART_CSS_CONTENT);
 
-    var layoutJs = File(LAYOUT_DIR + "/" + LAYOUT_JS);
+    var layoutJs = File(LAYOUT_DIR + "/" + ZAART_JS);
     layoutJs.createSync(recursive: false);
-    layoutJs.writeAsStringSync(DEFAULT_JS);
+    layoutJs.writeAsStringSync(ZAART_JS_CONTENT);
   }
 
-  var config = Map();
-  config["name"] = ctx["name"];
-  config["author"] = "UNKNOWN";
-  config["sections"] = List<String>();
-  var configJson = json.encode(config);
-  configFile.writeAsStringSync(configJson);
+  var cfg = Config()
+    ..author = "UNKNOWN"
+    ..name = "UNDEFINED"
+    ..layout = ZAART_LAYOUT_INCLUDES;
+
+  configFile.writeAsStringSync(json.encode(cfg.toJson()));
 
   return true;
 }

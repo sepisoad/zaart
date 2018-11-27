@@ -76,6 +76,29 @@ bool cmdBuild(Map ctx) {
     srcPages.forEach((page) => buildList.add(page));
   }
 
+  var includes = ZAART_LAYOUT_INCLUDES.expand((i) => [i]).toList();
+  var cssIncludes = <String>[];
+  var jsIncludes = <String>[];
+
+  var layoutDir = Directory(LAYOUT_DIR);
+  try {
+    var list = layoutDir.listSync(recursive: false, followLinks: false);
+    list.forEach((f) {
+      includes.add(f.uri.toString());
+    });
+  } catch (err) {
+    //WTF: warning log
+    print(err);
+  }
+
+  includes.forEach((item) {
+    if (item.endsWith(".js")) {
+      jsIncludes.add(item);
+    } else if (item.endsWith(".css")) {
+      cssIncludes.add(item);
+    }
+  });
+
   buildList.forEach((page) {
     var srcFile = File(page + ".md");
     var dstFile = File(BUILD_DIR + "/" + page + ".html");
@@ -85,25 +108,41 @@ bool cmdBuild(Map ctx) {
       var srcMarkdownData = srcFile.readAsStringSync();
       var dstHtmlData =
           markdownToHtml(srcMarkdownData, extensionSet: ExtensionSet.gitHubWeb);
-      var html = DEFAULT_HTML;
-      var layoutPath = ((String path) {
-        var basePath = "";
-        var arr = path.split("/");
-        var count = arr.length - 1;
-
-        if (count <= 0) {
-          return basePath;
-        }
-        for (var i = 0; i < count; i++) {
-          basePath = "../" + basePath;
+      var html = INDEX_HTML_CONTENT;
+      var fixLayoutPath = (String page, String layout) {
+        var res = layout;
+        var depth = page.split("/").length - 1;
+        for (var count = 0; count < depth; count++) {
+          res = "../" + res;
         }
 
-        return basePath;
-      })(srcFile.uri.toString());
+        return res;
+      };
+
       html = html.replaceFirst(RegExp(r'--TITLE--'), cfg.name);
       html = html.replaceFirst(RegExp(r'--BODY--'), dstHtmlData);
-      html = html.replaceFirst(RegExp(r'--CSS--'), layoutPath);
-      html = html.replaceFirst(RegExp(r'--JS--'), layoutPath);
+      var cssIncludesStr = "";
+      var jsIncludesStr = "";
+
+      cssIncludes.forEach((css) {
+        if (css.startsWith("http://") || css.startsWith("https://")) {
+          cssIncludesStr += '<link href="$css" rel="stylesheet">';
+        } else {
+          cssIncludesStr +=
+              '<link href="${fixLayoutPath(page, css)}" rel="stylesheet">';
+        }
+      });
+
+      jsIncludes.forEach((js) {
+        if (js.startsWith("http://") || js.startsWith("https://")) {
+          jsIncludesStr += '<script src="$js"></script>';
+        } else {
+          jsIncludesStr += '<script src="${fixLayoutPath(page, js)}"></script>';
+        }
+      });
+
+      html = html.replaceFirst(RegExp(r'--CSS--'), cssIncludesStr);
+      html = html.replaceFirst(RegExp(r'--JS--'), jsIncludesStr);
       dstFile.writeAsStringSync(html);
     } catch (err) {
       print("oops, failed to build page '${dstFile.uri.toString()}'");

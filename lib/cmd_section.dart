@@ -96,7 +96,7 @@ bool _funAdd(Config cfg, String cfgName, String name) {
     var newDir = Directory(name);
     newDir.createSync();
 
-    var indexPage = name + "/" + INDEX_PAGE;
+    var indexPage = name + "/" + INDEX_MD;
     var indexFile = File(indexPage);
     indexFile.createSync();
   } catch (err) {

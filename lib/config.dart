@@ -32,7 +32,7 @@ class Children {
         'published': this.published,
         'date': this.date.toString(),
         'author': this.author,
-        'tags': tags
+        'tags': this.tags
       };
 }
 
@@ -65,24 +65,54 @@ class Section {
 }
 
 // =============================================================================
+// Layout type
+/// A class that represents layout
+// class Layout {
+//   String name;
+//   List<String> includes;
+
+//   /// default constructor
+//   Layout()
+//       : name = "",
+//         includes = <String>[];
+
+//   /// json constructor
+//   /// [json] is a `Map` with a `String` key and `dynamic` value
+//   Layout.fromJson(Map<String, dynamic> json) {
+//     this.name = json['name'];
+//     this.includes = json['includes'];
+//   }
+
+//   /// converts object to `json`
+//   Map<String, dynamic> toJson() =>
+//       {'name': this.name, 'includes': this.includes};
+// }
+
+// =============================================================================
 // Config type
 /// A class that represents configuration
 class Config {
   String author;
   String name;
+  List<String> layout;
   List<Section> sections;
 
   /// default constructor
   Config()
       : author = "",
         name = "",
-        sections = null;
+        layout = <String>[],
+        sections = <Section>[];
 
   /// json constructor
   /// [json] is a `Map` with a `String` key and `dynamic` value
   Config.fromJson(Map<String, dynamic> json) {
     this.author = json['author'];
     this.name = json['name'];
+    // this.layout = json['layout'].map<Layout>((l) {
+    //   return Layout.fromJson(l as Map<String, dynamic>);
+    // }).toList();
+    this.layout = json['layout'].map<String>((s) => s as String).toList();
     this.sections = json['sections'].map<Section>((s) {
       // var section = s as Map<String, dynamic>;
       // return Section.fromJson(section);
@@ -94,6 +124,7 @@ class Config {
   Map<String, dynamic> toJson() => {
         'author': this.author,
         'name': this.name,
+        'layout': this.layout,
         'sections': this.sections.map((s) => s.toJson()).toList()
       };
 }
