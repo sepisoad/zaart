@@ -9,7 +9,7 @@ import 'cmd_publish.dart';
 import 'cmd_unpublish.dart';
 import 'cmd_build.dart';
 
-const _version = "0.0.12";
+const _version = "0.0.13";
 
 // =============================================================================
 // zaart
