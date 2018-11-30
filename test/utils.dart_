@@ -73,7 +73,7 @@ deleteSite() {
   var indexFile = File(INDEX_MD);
   var configFile = File(ZAART_CONFIG);
   var buildDir = Directory(BUILD_DIR);
-  var layoutDir = Directory(LAYOUT_DIR);
+  var layoutDir = Directory(THEME_DIR);
 
   try {
     indexFile.deleteSync();

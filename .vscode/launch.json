@@ -20,19 +20,11 @@
       "type": "dart",
       "args": [
         "init",
-        "--name",
-        "_shit_"
-      ]
-    }, {
-      "name": "Debug [section - add]",
-      "program": "bin/main.dart",
-      "request": "launch",
-      "type": "dart",
-      "args": [
-        "section",
-        "add",
-        "--name",
-        "DEBUG"
+        "--title",
+        "shitty site",
+        "--author",
+        "sepehr aryani",
+        ""
       ]
     }, {
       "name": "Debug [page - add]",
@@ -43,9 +35,18 @@
         "page",
         "add",
         "--name",
-        "xxx",
-        "--section",
-        "DEBUG"
+        "blog"
+      ]
+    }, {
+      "name": "Debug [page - add (child)]",
+      "program": "bin/main.dart",
+      "request": "launch",
+      "type": "dart",
+      "args": [
+        "page",
+        "add",
+        "--name",
+        "blog/post1"
       ]
     }, {
       "name": "Debug [page - del]",
@@ -56,9 +57,7 @@
         "page",
         "del",
         "--name",
-        "xxx",
-        "--section",
-        "DEBUG"
+        "blog/post1"
       ]
     }, {
       "name": "Debug [build]",

@@ -1,130 +1,79 @@
 // =============================================================================
-// Children type
-/// A class that represents section children
-class Children {
+// Page type
+/// A class that represents sections
+class Page {
   String name;
   bool published;
   DateTime date;
+  String layout;
   String author;
-  List<String> tags;
+  List<String> tags = [];
+  List<Page> children = [];
 
   /// default constructor
-  Children()
-      : name = '',
-        published = false,
-        date = DateTime.now(),
-        author = 'UNKNOWN',
-        tags = <String>[];
+  Page(
+      {this.name,
+      this.published = false,
+      this.date = null,
+      this.layout,
+      this.author,
+      this.tags,
+      this.children});
 
   /// json constructor
   /// [json] is a `Map` with a `String` key and `dynamic` value
-  Children.fromJson(Map<String, dynamic> json) {
+  Page.fromJson(Map<String, dynamic> json) {
     this.name = json['name'];
     this.published = json['published'];
-    this.date = DateTime.parse(json['date']);
+    this.date = json['date'] == null ? null : DateTime.parse(json['date']);
+    this.layout = json['layout'];
     this.author = json['author'];
     this.tags = json['tags'].map<String>((s) => s as String).toList();
+    this.children = json['children'].map<Page>((c) {
+      return Page.fromJson(c as Map<String, dynamic>);
+    }).toList();
   }
 
   /// converts object to `json`
   Map<String, dynamic> toJson() => {
         'name': this.name,
         'published': this.published,
-        'date': this.date.toString(),
+        'date': this.date == null ? null : this.date.toString(),
+        'layout': this.layout,
         'author': this.author,
-        'tags': this.tags
-      };
-}
-
-// =============================================================================
-// Section type
-/// A class that represents sections
-class Section {
-  String name;
-  List<Children> children;
-
-  /// default constructor
-  Section()
-      : name = '',
-        children = <Children>[];
-
-  /// json constructor
-  /// [json] is a `Map` with a `String` key and `dynamic` value
-  Section.fromJson(Map<String, dynamic> json) {
-    this.name = json['name'];
-    this.children = json['children'].map<Children>((c) {
-      return Children.fromJson(c as Map<String, dynamic>);
-    }).toList();
-  }
-
-  /// converts object to `json`
-  Map<String, dynamic> toJson() => {
-        'name': this.name,
+        'tags': this.tags,
         'children': this.children.map((c) => c.toJson()).toList()
       };
 }
-
-// =============================================================================
-// Layout type
-/// A class that represents layout
-// class Layout {
-//   String name;
-//   List<String> includes;
-
-//   /// default constructor
-//   Layout()
-//       : name = "",
-//         includes = <String>[];
-
-//   /// json constructor
-//   /// [json] is a `Map` with a `String` key and `dynamic` value
-//   Layout.fromJson(Map<String, dynamic> json) {
-//     this.name = json['name'];
-//     this.includes = json['includes'];
-//   }
-
-//   /// converts object to `json`
-//   Map<String, dynamic> toJson() =>
-//       {'name': this.name, 'includes': this.includes};
-// }
 
 // =============================================================================
 // Config type
 /// A class that represents configuration
 class Config {
   String author;
-  String name;
-  List<String> layout;
-  List<Section> sections;
+  String title;
+  String theme;
+  List<Page> pages = [];
 
   /// default constructor
-  Config()
-      : author = "",
-        name = "",
-        layout = <String>[],
-        sections = <Section>[];
+  Config({this.title, this.author, this.theme, this.pages});
 
   /// json constructor
   /// [json] is a `Map` with a `String` key and `dynamic` value
   Config.fromJson(Map<String, dynamic> json) {
     this.author = json['author'];
-    this.name = json['name'];
-    // this.layout = json['layout'].map<Layout>((l) {
-    //   return Layout.fromJson(l as Map<String, dynamic>);
-    // }).toList();
-    this.layout = json['layout'].map<String>((s) => s as String).toList();
-    this.sections = json['sections'].map<Section>((s) {
-      // var section = s as Map<String, dynamic>;
-      // return Section.fromJson(section);
-      return Section.fromJson(s as Map<String, dynamic>);
+    this.title = json['title'];
+    this.theme = json['theme'];
+    this.pages = json['pages'].map<Page>((s) {
+      return Page.fromJson(s as Map<String, dynamic>);
     }).toList();
   }
 
   /// converts object to `json`
   Map<String, dynamic> toJson() => {
         'author': this.author,
-        'name': this.name,
-        'layout': this.layout,
-        'sections': this.sections.map((s) => s.toJson()).toList()
+        'title': this.title,
+        'theme': this.theme,
+        'pages': this.pages.map((s) => s.toJson()).toList()
       };
 }

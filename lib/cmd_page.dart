@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:logging/logging.dart';
 import 'config.dart';
+import 'defaults.dart';
 import 'utils.dart';
 
 // =============================================================================
@@ -29,9 +30,9 @@ bool cmdPage(Map ctx) {
     return false;
   }
 
-  var fun = cmd["fun"];
-  var page = cmd["name"];
-  var section = cmd["section"];
+  String fun = cmd["fun"];
+  String page = cmd["name"];
+  String layout = cmd["layout"];
   var configFileName = ctx["config"];
 
   if (null == fun) {
@@ -48,13 +49,6 @@ bool cmdPage(Map ctx) {
     return false;
   }
 
-  if (null == section) {
-    print("oh no, i faced an internal error!");
-    Logger.root.severe(
-        '"section" key is missing from "cmd-page" map in cmdPage() function');
-    return false;
-  }
-
   if (null == configFileName) {
     print("oh no, i faced an internal error!");
     Logger.root.severe(
@@ -62,14 +56,34 @@ bool cmdPage(Map ctx) {
     return false;
   }
 
+  String parent;
+
+  if (page.contains('\\')) {
+    page = page.replaceAll('\\', '/');
+  }
+
+  if (page.contains('/')) {
+    var arr = page.split('/');
+    if (arr.length > 2) {
+      print("oops, you can only have at most 1 level of depth in page name");
+      print("for example: [page] or [page]/[child]");
+      Logger.root.warning('page name $page is not acceptable');
+      return false;
+    }
+    parent = arr[0];
+    page = arr[1];
+  } else {
+    parent = null;
+  }
+
   Config config = readConfig(configFileName);
 
   switch (fun) {
     case "add":
-      return _funAdd(config, configFileName, page, section);
+      return _funAdd(config, configFileName, page, parent, layout);
       break;
     case "del":
-      return _funDel(config, configFileName, page, section);
+      return _funDel(config, configFileName, page, parent);
       break;
     default:
       return false;
@@ -78,64 +92,57 @@ bool cmdPage(Map ctx) {
 
 // =============================================================================
 // _funAdd
-bool _funAdd(Config cfg, String cfgName, String page, String section) {
-  bool exists = cfg.sections.any((s) => s.name == section);
+bool _funAdd(Config cfg, String cfgName, String pageName, String parentName,
+    String layout) {
+  Page parent = null;
+  Page page = null;
 
-  if (!exists) {
-    print("oops, '$section' section is missing from section directory");
-    Logger.root.warning(
-        'cmdPage() -> _funAdd($page, $section) returned false, because the'
-        'section name was missing from config file');
+  if (null != parentName) {
+    parent =
+        cfg.pages.firstWhere((p) => p.name == parentName, orElse: () => null);
+    if (null == parent) {
+      print('oops, i cannot find any parent page with this name');
+      Logger.root.warning('parent page name $page was not found');
+      return false;
+    }
+    page = parent.children
+        .firstWhere((p) => p.name == pageName, orElse: () => null);
+  } else {
+    page = cfg.pages.firstWhere((p) => p.name == pageName, orElse: () => null);
+  }
+
+  if (null != page) {
+    print('oops, there is already another page with this name');
+    Logger.root.warning('parent page name $page is redundent');
     return false;
   }
 
-  var sectionIdx = cfg.sections.indexWhere((s) {
-    return s.name == section;
-  });
-
-  var s = cfg.sections[sectionIdx];
-  exists = s.children.any((child) {
-    return child.name == page;
-  });
-
-  if (exists) {
-    print("oops, page '$page' is already added to '$section'");
-    Logger.root.warning(
-        'cmdPage() -> _funAdd($page, $section) returned false, because the'
-        'page name was already added to section');
-    return false;
+  page = Page(
+      author: cfg.author,
+      layout: layout,
+      date: DateTime.now(),
+      name: pageName,
+      tags: [],
+      children: []);
+  if (null != parent) {
+    parent.children.add(page);
+  } else {
+    cfg.pages.add(page);
   }
 
-  var child = Children();
-  child.name = page;
-  cfg.sections[sectionIdx].children.add(child);
-
-  var sectionDir = Directory(section);
-  if (!sectionDir.existsSync()) {
-    print("oops, the section '$section' folder is missing from site root");
-    Logger.root.warning(
-        'cmdPage() -> _funAdd($page, $section) returned false, because the'
-        'section folder is missing from site root');
-    return false;
+  var pagePath = PAGES_DIR;
+  if (null != parent) {
+    pagePath += '/' + parentName;
   }
+  pagePath += '/' + pageName + '.md';
 
-  var pageFileName = section + '/' + page + ".md";
-  var pageFile = File(pageFileName);
-
-  if (pageFile.existsSync()) {
-    print("oops, the requested page already exists in '$section' folder!");
-    Logger.root.warning(
-        'cmdPage() -> _funAdd($page, $section) returned false, because the'
-        'requested page already exists in section folder');
-    return false;
-  }
-
+  var pageFile = File(pagePath);
   try {
-    pageFile.createSync(recursive: false);
+    pageFile.createSync(recursive: true);
   } catch (err) {
-    print("oops, failed to create '$page' page");
-    Logger.root.severe("failed to create '$page' page");
-    Logger.root.severe(err.toString());
+    print('oops, i cannot create "$pagePath" page');
+    Logger.root.severe('failed to create $pagePath');
+    Logger.root.severe(err);
     return false;
   }
 
@@ -144,64 +151,55 @@ bool _funAdd(Config cfg, String cfgName, String page, String section) {
 
 // =============================================================================
 // _funDel
-bool _funDel(Config cfg, String cfgName, String page, String section) {
-  bool exists = cfg.sections.any((s) => s.name == section);
+bool _funDel(
+  Config cfg,
+  String cfgName,
+  String pageName,
+  String parentName,
+) {
+  Page parent;
+  Page page;
 
-  if (!exists) {
-    print("oops, '$section' section is missing from section directory");
-    Logger.root.warning(
-        'cmdPage() -> _funDel($page, $section) returned false, because the'
-        'section name was missing from config file');
+  if (null != parentName) {
+    parent =
+        cfg.pages.firstWhere((p) => p.name == parentName, orElse: () => null);
+    if (null == parent) {
+      print('oops, i cannot find any parent page with this name');
+      Logger.root.warning('parent page name $page was not found');
+      return false;
+    }
+    page = parent.children
+        .firstWhere((p) => p.name == pageName, orElse: () => null);
+  } else {
+    page = cfg.pages.firstWhere((p) => p.name == pageName, orElse: () => null);
+  }
+
+  if (null == page) {
+    print('oops, i cannot find any page with this name');
+    Logger.root.warning('page name $page was not found');
     return false;
   }
 
-  var sectionIdx = cfg.sections.indexWhere((s) => s.name == section);
-
-  var s = cfg.sections[sectionIdx];
-  exists = s.children.any((child) {
-    return child.name == page;
-  });
-
-  if (!exists) {
-    print(
-        "oops, '$page' page is missing from '$section' sections in config file");
-    Logger.root.warning(
-        'cmdPage() -> _funDel($page, $section) returned false, because the'
-        'page was missing from config');
-    return false;
+  var pagePath = PAGES_DIR;
+  if (null != parent) {
+    pagePath += '/' + parentName;
   }
+  pagePath += '/' + pageName + '.md';
 
-  cfg.sections[sectionIdx].children.removeWhere((child) {
-    return child.name == page;
-  });
-
-  var sectionDir = Directory(section);
-  if (!sectionDir.existsSync()) {
-    print("oops, the '$section' section directory does not exist!");
-    Logger.root.warning(
-        'cmdPage() -> _funDel($page, $section) returned false, because the'
-        'section directory was missing from site root');
-    return false;
-  }
-
-  var pageFileName = section + '/' + page + ".md";
-  var pageFile = File(pageFileName);
-
-  if (!pageFile.existsSync()) {
-    print("oops, '$page' page does not exist!");
-    Logger.root.warning(
-        'cmdPage() -> _funDel($page, $section) returned false, because the'
-        '"$page" page file is missing from section directory');
-    return false;
-  }
-
+  var pageFile = File(pagePath);
   try {
-    pageFile.deleteSync(recursive: false);
+    pageFile.deleteSync(recursive: true);
   } catch (err) {
-    print("oops, failed to delete '$page' page");
-    Logger.root.severe("failed to delete '$page' page");
-    Logger.root.severe(err.toString());
+    print('oops, i cannot delete "$pagePath" page');
+    Logger.root.severe('failed to delete $pagePath');
+    Logger.root.severe(err);
     return false;
+  }
+
+  if (null != parent) {
+    parent.children.removeWhere((c) => c.name == pageName);
+  } else {
+    cfg.pages.removeWhere((p) => p.name == pageName);
   }
 
   return writeConfig(cfg.toJson(), cfgName);

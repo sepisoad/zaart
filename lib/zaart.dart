@@ -3,13 +3,10 @@ import 'package:args/args.dart';
 import 'package:logging/logging.dart';
 import 'defaults.dart';
 import 'cmd_init.dart';
-import 'cmd_section.dart';
 import 'cmd_page.dart';
-import 'cmd_publish.dart';
-import 'cmd_unpublish.dart';
 import 'cmd_build.dart';
 
-const _version = "0.0.13";
+const _version = "0.0.14";
 
 // =============================================================================
 // zaart
@@ -20,10 +17,9 @@ void zaart(List<String> args) async {
   _setupLogger();
 
   var context = Map();
-  context["name"] = DEFAULT_NAME;
-  context["config"] = ZAART_CONFIG;
+  context["name"] = DEFAULT_TITLE;
+  context["config"] = ZAART_CONFIG_FILE;
   context["cmd-init"] = Map();
-  context["cmd-section"] = Map();
   context["cmd-page"] = Map();
   context["cmd-publish"] = Map();
   context["cmd-unpublish"] = Map();
@@ -31,10 +27,7 @@ void zaart(List<String> args) async {
 
   var argParser = ArgParser();
   _defInitCmd(argParser, context);
-  _defSectionCmd(argParser, context);
   _defPageCmd(argParser, context);
-  _defPublishCmd(argParser, context);
-  _defUnpublishCmd(argParser, context);
   _defBuildCmd(argParser, context);
 
   argParser.addFlag("help", abbr: "h", defaultsTo: false, callback: _printHelp);
@@ -65,17 +58,8 @@ void zaart(List<String> args) async {
     case "init":
       cmdInit(context);
       break;
-    case "section":
-      cmdSection(context);
-      break;
     case "page":
       cmdPage(context);
-      break;
-    case "publish":
-      cmdPublish(context);
-      break;
-    case "unpublish":
-      cmdUnpublish(context);
       break;
     case "build":
       cmdBuild(context);
@@ -116,54 +100,34 @@ void _printHelp(bool val) async {
   print("usage: zaart [command] (options: value) (flags)\n"
       "commands:\n"
       "✔ init => is used to initialize a new site\n"
-      "  ↳ --name: [NAME] => is used to set site name, defaults to"
-      "'$DEFAULT_NAME'\n"
-      "  ↳ -n: [NAME] => short form of --name\n\n"
+      "  ↳ --title: [TITLE] => is used to set site titel, defaults to"
+      "'$DEFAULT_TITLE'\n"
+      "  ↳ -t: [TITLE] => short form of --titel"
+      "  ↳ --author: [AUTHOR] => is used to set site author, defaults to"
+      "'$DEFAULT_AUTHOR'\n"
+      "  ↳ -a: [AUTHOR] => short form of --author\n\n"
+      "  ↳ --layout: [LAYOUT] => is used to set site layout, defaults to"
+      "'$ZAART_LANDING_LAYOUT_FILE'\n"
+      "  ↳ -l: [LAYOUT] => short form of --layout\n\n"
       "  examples:\n"
-      "    ‣ zaart init -n 'my sample site'\n"
-      "\n"
-      "✔ section => is used to manages sections\n"
-      "  ↳ add: is used to add a new section\n"
-      "  ↳ del: is used to delete an existing section\n"
-      "  ↳ --name: [NAME] => is used to set section name\n"
-      "  ↳ -n: [NAME] => short form of --name\n\n"
-      "  examples:\n"
-      "    ‣ zaart section add -n blog\n"
-      "    ‣ zaart section del -n blog\n"
+      "    ‣ zaart init -t 'my sample site' -a 'daron malakian' -l 'my.layout'\n"
       "\n"
       "✔ page => is used to manages pages\n"
       "  ↳ add: is used to add a new page\n"
       "  ↳ del: is used to delete an existing page\n"
       "  ↳ --name: [NAME] => is used to set page name\n"
       "  ↳ -n: [NAME] => short form of --name\n"
-      "  ↳ --section: [NAME] => is used to set the page parent section\n"
-      "  ↳ -s: [NAME] => short form of --section\n\n"
+      "  ↳ --layout: [NAME] => is used to set the page layout\n"
+      "  ↳ -l: [NAME] => short form of --layout\n\n"
       "  examples:\n"
-      "    ‣ zaart page add -n post1 -s blog\n"
-      "    ‣ zaart page del -n post1 -s blog\n"
-      "\n"
-      "✔ publish => is used to mark a page for being pulished\n"
-      "  ↳ --name: [NAME] => is used to set page name\n"
-      "  ↳ -n: [NAME] => short form of --name\n"
-      "  ↳ --section: [NAME] => is used to set the page parent section\n"
-      "  ↳ -s: [NAME] => short form of --section\n\n"
-      "  examples:\n"
-      "    ‣ zaart publish -n post1 -s blog\n"
-      "\n"
-      "✔ unpublish => is used to mark a page for not being pulished\n"
-      "  ↳ --name: [NAME] => is used to set page name\n"
-      "  ↳ -n: [NAME] => short form of --name\n"
-      "  ↳ --section: [NAME] => is used to set the page parent section\n"
-      "  ↳ -s: [NAME] => short form of --section\n\n"
-      "  examples:\n"
-      "    ‣ zaart unpublish -n post1 -s blog\n"
+      "    ‣ zaart page add -n blog\n"
+      "    ‣ zaart page add -n blog/post1 \n"
+      "    ‣ zaart page del -n blog/post1\n"
+      "    ‣ zaart page del -n blog\n"
       "\n"
       "✔ build => is used to build site with files marked as published\n"
-      "  ↳ --force => is used to force a rebuild\n"
-      "  ↳ -f => short form of --force\n\n"
       "  examples:\n"
       "    ‣ zaart build\n"
-      "    ‣ zaart build -f\n"
       "\n");
 
   exit(0);
@@ -181,31 +145,27 @@ _printVersion(bool val) {
 // _defInitCmd
 void _defInitCmd(ArgParser root, Map ctx) {
   var cmd = root.addCommand("init");
-  cmd.addOption("name",
-      abbr: "n",
-      defaultsTo: DEFAULT_NAME,
-      help: "use this option set the name of site,"
-          "otherwise '$DEFAULT_NAME' is used",
-      valueHelp: '"my sample site"', callback: (val) async {
-    ctx["name"] = val;
+  cmd.addOption("title",
+      abbr: "t",
+      defaultsTo: DEFAULT_TITLE,
+      help: "set site title,"
+          "otherwise '$DEFAULT_TITLE' is used", callback: (val) async {
+    ctx["title"] = val;
   });
-}
-
-// =============================================================================
-// _defSectionCmd
-void _defSectionCmd(ArgParser root, Map ctx) {
-  var cmd = root.addCommand("section");
-  var add = cmd.addCommand("add");
-  var del = cmd.addCommand("del");
-
-  add.addOption("name", abbr: "n", defaultsTo: null, callback: (val) async {
-    ctx["cmd-section"]["fun"] = "add";
-    ctx["cmd-section"]["arg"] = val;
+  cmd.addOption("author",
+      abbr: "a",
+      defaultsTo: DEFAULT_AUTHOR,
+      help: "sets site's author name,"
+          "otherwise '$DEFAULT_AUTHOR' is used", callback: (val) async {
+    ctx["author"] = val;
   });
-
-  del.addOption("name", abbr: "n", defaultsTo: null, callback: (val) async {
-    ctx["cmd-section"]["fun"] = "del";
-    ctx["cmd-section"]["arg"] = val;
+  cmd.addOption("layout",
+      abbr: "l",
+      defaultsTo: ZAART_LANDING_LAYOUT_FILE,
+      help: "sets site's author name,"
+          "otherwise '$ZAART_LANDING_LAYOUT_FILE' is used",
+      callback: (val) async {
+    ctx["layout"] = val;
   });
 }
 
@@ -221,47 +181,15 @@ void _defPageCmd(ArgParser root, Map ctx) {
     ctx["cmd-page"]["name"] = val;
   });
 
-  add.addOption("section", abbr: "s", defaultsTo: null, callback: (val) async {
+  add.addOption("layout", abbr: "l", defaultsTo: ZAART_SINGLE_LAYOUT_FILE,
+      callback: (val) async {
     ctx["cmd-page"]["fun"] = "add";
-    ctx["cmd-page"]["section"] = val;
+    ctx["cmd-page"]["layout"] = val;
   });
 
   del.addOption("name", abbr: "n", defaultsTo: null, callback: (val) async {
     ctx["cmd-page"]["fun"] = "del";
     ctx["cmd-page"]["name"] = val;
-  });
-
-  del.addOption("section", abbr: "s", defaultsTo: null, callback: (val) async {
-    ctx["cmd-page"]["fun"] = "del";
-    ctx["cmd-page"]["section"] = val;
-  });
-}
-
-// =============================================================================
-// _defPublishCmd
-void _defPublishCmd(ArgParser root, Map ctx) {
-  var cmd = root.addCommand("publish");
-
-  cmd.addOption("page", abbr: "p", defaultsTo: null, callback: (val) async {
-    ctx["cmd-publish"]["page"] = val;
-  });
-
-  cmd.addOption("section", abbr: "s", defaultsTo: null, callback: (val) async {
-    ctx["cmd-publish"]["section"] = val;
-  });
-}
-
-// =============================================================================
-// _defUnpublishCmd
-void _defUnpublishCmd(ArgParser root, Map ctx) {
-  var cmd = root.addCommand("unpublish");
-
-  cmd.addOption("page", abbr: "p", defaultsTo: null, callback: (val) async {
-    ctx["cmd-unpublish"]["page"] = val;
-  });
-
-  cmd.addOption("section", abbr: "s", defaultsTo: null, callback: (val) async {
-    ctx["cmd-unpublish"]["section"] = val;
   });
 }
 

@@ -5,14 +5,10 @@
 .pub/
 build/
 .packages
-index.md
-layout
-blog
+pages
+theme
 *.json
-# If you're building an application, you may want to check-in your pubspec.lock
-# pubspec.lock
 *.log
-example
 
 # Directory created by dartdoc
 # If you don't generate documentation locally you can remove this line.
