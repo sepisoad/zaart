@@ -1,6 +1,8 @@
+
 # ⚡ Zaart!
 
   
+![enter image description here](https://i.postimg.cc/XJgv7ys8/Sepisoad.png)
 
 zaart is a dead simple static site generator written in [dart programming language](https://dartlang.org).
 
