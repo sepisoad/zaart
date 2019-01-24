@@ -125,7 +125,7 @@ bool _funAdd(Config cfg, String cfgName, String pageName, String parentName,
       tags: [],
       children: []);
   if (null != parent) {
-    parent.children.add(page);
+    parent.children.insert(0, page);
   } else {
     cfg.pages.add(page);
   }
